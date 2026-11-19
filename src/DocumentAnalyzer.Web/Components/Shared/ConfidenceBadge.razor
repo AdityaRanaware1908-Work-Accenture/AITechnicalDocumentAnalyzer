@@ -1,0 +1,19 @@
+﻿<span class="da-badge @Css">@(Prefix + Text)</span>
+
+@code {
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Optional text before the value, for example "Confidence: " on cards where there is no column header.</summary>
+    [Parameter] public string? Prefix { get; set; }
+
+    private bool IsNone => string.IsNullOrWhiteSpace(Value);
+
+    private string Text => IsNone ? "None" : Value!;
+
+    private string Css => IsNone ? "da-na" : Value switch
+    {
+        Constants.Confidences.High => "da-ok",
+        Constants.Confidences.Medium => "da-part",
+        _ => "da-miss"
+    };
+}

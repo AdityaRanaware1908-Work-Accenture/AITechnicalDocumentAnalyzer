@@ -1,0 +1,90 @@
+<div class="da-result-head">
+    <div>
+        <h1>@(View.Report.RequirementComparisons is null ? "Requirement analysis" : "Requirements vs design")</h1>
+        <div class="da-muted">@View.Title @MetricsLine</div>
+    </div>
+    <div class="da-row-actions">
+        @if (View.FileName is not null)
+        {
+            <a class="da-btn" href="reports/@View.FileName" download>Download JSON</a>
+        }
+        <button type="button" class="da-btn" @onclick="OnClose">Close</button>
+    </div>
+</div>
+
+<p class="da-summary">@View.Report.Summary</p>
+
+@if (View.Report.RequirementComparisons is { } comparisons)
+{
+    <ComparisonResults Comparisons="comparisons" />
+}
+else if (View.Report.RequirementReviews is not null)
+{
+    <AnalysisResults Report="View.Report" />
+}
+else if (View.Report.IssuesIdentified is { } issues)
+{
+    <IssueResults Issues="issues" />
+}
+
+<details class="da-details">
+    <summary>Validation warnings (@(View.WarningsKnown ? View.Warnings.Count.ToString() : "not stored"))</summary>
+    @if (!View.WarningsKnown)
+    {
+        <p class="da-muted">Warnings are only available for the run that just finished; they are not saved in the report file.</p>
+    }
+    else if (View.Warnings.Count == 0)
+    {
+        <p class="da-muted">No warnings.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var warning in View.Warnings)
+            {
+                <li>@warning</li>
+            }
+        </ul>
+    }
+</details>
+
+@if (View.Report.ProcessingMetrics is { } metrics)
+{
+    <details class="da-details">
+        <summary>Processing metrics</summary>
+        <p class="da-muted">
+            @metrics.Provider · @metrics.Model ·
+            Total @metrics.TotalDurationSeconds.ToString("F1") s ·
+            @if (metrics.PromptEvaluationSeconds is { } promptSeconds)
+            {
+                <text>Prompt evaluation @promptSeconds.ToString("F1") s · </text>
+            }
+            @if (metrics.GenerationSeconds is { } generationSeconds)
+            {
+                <text>Generation @generationSeconds.ToString("F1") s · </text>
+            }
+            Prompt tokens @metrics.PromptTokens ·
+            Generated tokens @metrics.GeneratedTokens
+        </p>
+    </details>
+}
+
+@code {
+    [Parameter, EditorRequired] public ReportView View { get; set; } = default!;
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private string MetricsLine
+    {
+        get
+        {
+            if (View.Report.ProcessingMetrics is not { } m)
+            {
+                return string.Empty;
+            }
+
+            var total = TimeSpan.FromSeconds(m.TotalDurationSeconds);
+
+            return $"· {m.Provider} {m.Model} · {(int)total.TotalMinutes}:{total.Seconds:00}";
+        }
+    }
+}

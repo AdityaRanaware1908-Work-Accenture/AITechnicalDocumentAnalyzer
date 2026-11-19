@@ -1,0 +1,19 @@
+REQ-001: The system shall authenticate users using multifactor authentication (MFA) for every online banking session.
+
+REQ-002: The system shall complete 95% of fund transfers within 3 seconds under a load of 1,000 concurrent users.
+
+REQ-003: The system shall prevent duplicate fund transfers when a user retries a request due to a network timeout.
+
+REQ-004: For every successful fund transfer, the system shall debit the source account and credit the destination account exactly once.
+
+REQ-005: The system shall recover from a regional outage with a Recovery Time Objective (RTO) of 30 minutes and a Recovery Point Objective (RPO) of 5 minutes.
+
+REQ-006: Transaction audit records shall be retained for 10 years and protected against unauthorized modification or deletion.
+
+REQ-007: All data transmitted between application components shall be encrypted in transit using TLS 1.2 or higher.
+
+REQ-008: The system shall reject a fund transfer if the source account has insufficient available balance at the time of transfer execution.
+
+REQ-009: The system shall notify the customer through email or SMS within 60 seconds after a successful fund transfer.
+
+REQ-010: The system shall support fund transfers of up to INR 500,000 per transaction.

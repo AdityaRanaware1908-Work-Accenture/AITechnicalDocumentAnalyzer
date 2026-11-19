@@ -1,0 +1,16 @@
+﻿<span class="da-badge @Css">@Text</span>
+
+@code {
+    [Parameter] public string? Value { get; set; }
+
+    private bool IsNone => string.IsNullOrWhiteSpace(Value) || string.Equals(Value, Constants.Severities.None, StringComparison.OrdinalIgnoreCase);
+
+    private string Text => IsNone ? "None" : Value!;
+
+    private string Css => IsNone ? "da-na" : Value switch
+    {
+        Constants.Severities.Critical or Constants.Severities.High => "da-bad",
+        Constants.Severities.Medium => "da-part",
+        _ => "da-miss"
+    };
+}

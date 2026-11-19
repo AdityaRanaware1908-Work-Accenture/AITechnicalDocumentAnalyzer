@@ -1,0 +1,7 @@
+REQ-001: The application should load quickly and support many users.
+
+REQ-002: The system shall lock a user account after 5 consecutive failed login attempts.
+
+REQ-003: The system shall respond to 95% of API requests within 300 milliseconds under a load of 500 concurrent users.
+
+REQ-004: The system shall retain audit records for 365 days.

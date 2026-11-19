@@ -1,0 +1,114 @@
+@using DocumentAnalyzer.Core.Models.Reports
+
+<div class="da-chips">
+    <div class="da-chip"><b>@Comparisons.Count</b> Requirements</div>
+    @foreach (var status in Constants.ComparisonStatuses.All)
+    {
+        var count = Comparisons.Count(c => c.Status == status);
+
+        if (count > 0)
+        {
+            <div class="da-chip"><StatusBadge Status="@status" /> <b>@count</b></div>
+        }
+    }
+</div>
+
+<div class="da-filters">
+    <label>Status
+        <select @bind="statusFilter">
+            <option value="">All</option>
+            @foreach (var option in Constants.ComparisonStatuses.All)
+            {
+                <option value="@option">@StatusBadge.LabelFor(option)</option>
+            }
+        </select>
+    </label>
+    <label>Severity
+        <select @bind="severityFilter">
+            <option value="">All</option>
+            @foreach (var option in Constants.Severities.MostToLeastSevere)
+            {
+                <option value="@option">@option</option>
+            }
+        </select>
+    </label>
+    <label>Search
+        <input type="search" placeholder="Requirement or design text" @bind="search" @bind:event="oninput" />
+    </label>
+</div>
+
+@{
+    var rows = Filtered();
+}
+
+<table class="da-tbl">
+    <thead>
+        <tr><th>Requirement</th><th>Statement</th><th>Matched design</th><th>Status</th><th>Severity</th><th>Confidence</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var row in rows)
+        {
+            var isOpen = expanded == row.RequirementId;
+
+            <tr class="@(isOpen ? "da-hl" : null)">
+                <td><button type="button" class="da-lnk" aria-expanded="@(isOpen ? "true" : "false")" @onclick="() => Toggle(row.RequirementId)">@row.RequirementId</button></td>
+                <td>@Short(row.RequirementStatement)</td>
+                <td>@OrNone(row.MatchedDesignId)</td>
+                <td><StatusBadge Status="@row.Status" /></td>
+                <td><SeverityBadge Value="@row.Severity" /></td>
+                <td><ConfidenceBadge Value="@row.Confidence" /></td>
+            </tr>
+
+            @if (isOpen)
+            {
+                <tr class="da-hl">
+                    <td colspan="6">
+                        <div class="da-detail">
+                            <b>Requirement</b><span>@OrNone(row.RequirementStatement)</span>
+                            <b>Design</b><span>@OrNone(row.DesignStatement)</span>
+                            @if (!string.IsNullOrWhiteSpace(row.RequirementValue) || !string.IsNullOrWhiteSpace(row.DesignValue))
+                            {
+                                <b>Compared values</b><span>@OrNone(row.RequirementValue) vs @OrNone(row.DesignValue)</span>
+                            }
+                            <b>Reasoning</b><span>@OrNone(row.ComparisonReasoning)</span>
+                            @if (row.Explanation is not null)
+                            {
+                                <b>Explanation</b><span>@row.Explanation</span>
+                            }
+                            @if (row.Recommendation is not null)
+                            {
+                                <b>Recommendation</b><span>@row.Recommendation</span>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<p class="da-muted">Showing @rows.Count of @Comparisons.Count requirements. Select a requirement to expand its reasoning, explanation and recommendation.</p>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<RequirementComparison> Comparisons { get; set; } = [];
+
+    private string statusFilter = string.Empty;
+    private string severityFilter = string.Empty;
+    private string search = string.Empty;
+    private string? expanded;
+
+    private void Toggle(string requirementId) => expanded = expanded == requirementId ? null : requirementId;
+
+    private List<RequirementComparison> Filtered() => Comparisons
+        .Where(c =>
+            (statusFilter.Length == 0 || c.Status == statusFilter) &&
+            (severityFilter.Length == 0 || string.Equals(c.Severity, severityFilter, StringComparison.OrdinalIgnoreCase)) &&
+            (search.Length == 0 || Matches(c.RequirementId) || Matches(c.RequirementStatement) || Matches(c.DesignStatement)))
+        .ToList();
+
+    private bool Matches(string text) => text.Contains(search, StringComparison.OrdinalIgnoreCase);
+
+    private static string Short(string text, int max = 120) => text.Length <= max ? text : text[..max].TrimEnd() + "…";
+
+    private static string OrNone(string? text) => string.IsNullOrWhiteSpace(text) ? "None" : text;
+}

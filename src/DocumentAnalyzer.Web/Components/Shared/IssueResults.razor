@@ -1,0 +1,77 @@
+@using DocumentAnalyzer.Core.Models.Reports
+
+<div class="da-filters">
+    <label>Issue type
+        <select @bind="typeFilter">
+            <option value="">All</option>
+            @foreach (var type in Constants.IssueTypes.ForDocumentAnalysis)
+            {
+                <option value="@type">@type (@(Issues.Count(i => i.IssueType == type)))</option>
+            }
+        </select>
+    </label>
+    <label>Severity
+        <select @bind="severityFilter">
+            <option value="">All</option>
+            @foreach (var severity in Constants.Severities.MostToLeastSevere)
+            {
+                <option value="@severity">@severity (@(Issues.Count(i => string.Equals(i.Severity, severity, StringComparison.OrdinalIgnoreCase))))</option>
+            }
+        </select>
+    </label>
+</div>
+
+@{
+    var rows = Filtered();
+}
+
+<section class="da-list" aria-label="Issues">
+    @foreach (var issue in rows)
+    {
+        <article class="da-card">
+            <div class="da-meta">
+                <SeverityBadge Value="@issue.Severity" />
+                <span class="da-badge da-type">@issue.IssueType</span>
+                @if (!string.IsNullOrWhiteSpace(issue.RequirementId))
+                {
+                    <b>@issue.RequirementId</b>
+                }
+                <ConfidenceBadge Value="@issue.Confidence" Prefix="Confidence: " />
+            </div>
+            <div class="da-q"><b>Evidence</b>@issue.Evidence</div>
+            @if (!string.IsNullOrWhiteSpace(issue.RelatedEvidence))
+            {
+                <div class="da-q"><b>Conflicts with</b>@issue.RelatedEvidence</div>
+            }
+            <p><b>Explanation</b> @issue.Explanation</p>
+            <p><b>Recommendation</b> @issue.Recommendation</p>
+        </article>
+    }
+
+    @if (rows.Count == 0)
+    {
+        <p class="da-muted">No issues match the filters.</p>
+    }
+</section>
+
+<p class="da-muted">Showing @rows.Count of @Issues.Count issues.</p>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<DocumentIssue> Issues { get; set; } = [];
+
+    private string typeFilter = string.Empty;
+    private string severityFilter = string.Empty;
+
+    private List<DocumentIssue> Filtered() => Issues
+        .Where(i =>
+            (typeFilter.Length == 0 || i.IssueType == typeFilter) &&
+            (severityFilter.Length == 0 || string.Equals(i.Severity, severityFilter, StringComparison.OrdinalIgnoreCase)))
+        .ToList();
+
+    // private static string SeverityCss(string severity) => severity switch
+    // {
+    //     Constants.Severities.Critical or Constants.Severities.High => "da-bad",
+    //     Constants.Severities.Medium => "da-part",
+    //     _ => "da-miss"
+    // };
+}

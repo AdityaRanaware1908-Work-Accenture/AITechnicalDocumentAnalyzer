@@ -1,0 +1,47 @@
+<section class="da-progress" aria-label="Run in progress">
+    <h1>@Run.Title</h1>
+    <div class="da-muted">@(Run.Mode == Constants.AnalysisMode.Comparison ? "Requirements vs design" : "Requirement analysis")</div>
+
+    <div class="da-bar" role="progressbar" aria-label="Run in progress"><span class="da-fill"></span></div>
+    <p class="da-elapsed">@Elapsed</p>
+
+    <ol class="da-steps">
+        @foreach (var step in Steps)
+        {
+            var state = StateOf(step.Stage);
+            <li><span class="da-badge @state.Css">@state.Text</span>@step.Label</li>
+        }
+    </ol>
+
+    <div class="da-row-actions">
+        <button type="button" class="da-btn" @onclick="OnCancel">Cancel run</button>
+        <span class="da-muted">The run continues if you leave this page. Its report appears under Recent runs.</span>
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public RunInfo Run { get; set; } = default!;
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private static readonly (Constants.RunStage Stage, string Label)[] Steps =
+    [
+        (Constants.RunStage.LoadingDocuments, "Preparing the documents and prompt"),
+        (Constants.RunStage.WaitingForModel, "Waiting for the model response (the longest step)"),
+        (Constants.RunStage.Validating, "Mapping and validating the results"),
+        (Constants.RunStage.Saving, "Saving the report")
+    ];
+
+    private string Elapsed
+    {
+        get
+        {
+            var elapsed = DateTime.UtcNow - Run.StartedUtc;
+            return $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}";
+        }
+    }
+
+    private (string Css, string Text) StateOf(Constants.RunStage step) =>
+        step < Run.Stage ? ("da-ok", "Done")
+        : step == Run.Stage ? ("da-now", "In progress")
+        : ("da-wait", "Waiting");
+}

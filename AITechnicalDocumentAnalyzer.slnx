@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/AITechnicalDocumentAnalyzer/">
+    <Project Path="src/DocumentAnalyzer.Core/DocumentAnalyzer.Core.csproj" />
+    <Project Path="src/DocumentAnalyzer.Infrastructure/DocumentAnalyzer.Infrastructure.csproj" />
+    <Project Path="src/DocumentAnalyzer.Web/DocumentAnalyzer.Web.csproj" />
+  </Folder>
+</Solution>

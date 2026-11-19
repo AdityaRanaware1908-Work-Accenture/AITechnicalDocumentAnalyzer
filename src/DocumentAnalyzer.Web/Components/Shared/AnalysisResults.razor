@@ -1,0 +1,177 @@
+﻿@using DocumentAnalyzer.Core.Analysis
+
+<div class="da-chips">
+    <div class="da-chip"><b>@Reviews.Count</b> Requirements</div>
+    <div class="da-chip"><span class="da-badge da-ok">No issues</span> <b>@(Reviews.Count(r => r.IssueCount == 0))</b></div>
+    <div class="da-chip"><span class="da-badge da-bad">With issues</span> <b>@(Reviews.Count(r => r.IssueCount > 0))</b></div>
+
+@*     @foreach (var severity in Constants.Severities.MostToLeastSevere)
+    {
+        var count = Reviews.Count(r => string.Equals(r.HighestSeverity, severity, StringComparison.OrdinalIgnoreCase));
+
+        if (count > 0)
+        {
+            <div class="da-chip">Severity</div>
+            <div class="da-chip"><SeverityBadge Value="@severity" /> <b>@count</b></div>
+        }
+    } *@
+</div>
+
+<div class="da-filters">
+    <label>
+        Result
+        <select @bind="resultFilter">
+            <option value="">All</option>
+            <option value="issues">With issues</option>
+            <option value="clean">No issues</option>
+        </select>
+    </label>
+    <label>
+        Severity
+        <select @bind="severityFilter">
+            <option value="">All</option>
+            @foreach (var option in Constants.Severities.MostToLeastSevere)
+            {
+                <option value="@option">@option</option>
+            }
+        </select>
+    </label>
+    <label>
+        Search
+        <input type="search" placeholder="Requirement text" @bind="search" @bind:event="oninput" />
+    </label>
+</div>
+
+@{
+    var rows = Filtered();
+}
+
+<table class="da-tbl">
+    <thead>
+        <tr><th>Requirement</th><th>Statement</th><th>Result</th><th>Severity</th><th>Confidence</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var row in rows)
+        {
+            var rowIssues = IssuesFor(row);
+            var isOpen = expanded == row.RequirementId;
+
+            <tr class="@(isOpen ? "da-hl" : null)">
+                <td>
+                    @if (rowIssues.Count > 0)
+                    {
+                        <button type="button" class="da-lnk" aria-expanded="@(isOpen ? "true" : "false")" @onclick="() => Toggle(row.RequirementId)">@row.RequirementId</button>
+                    }
+                    else
+                    {
+                        <span class="da-id">@row.RequirementId</span>
+                    }
+                </td>
+                <td>@Short(row.RequirementStatement)</td>
+                <td>
+                    @if (rowIssues.Count == 0)
+                    {
+                        <span class="da-badge da-ok">No issues</span>
+                    }
+                    else
+                    {
+                        <span class="da-tags">
+                            @foreach (var type in rowIssues.Select(i => i.IssueType).Distinct())
+                            {
+                                <span class="da-badge da-bad">@type</span>
+                            }
+                        </span>
+                    }
+                </td>
+                    <td><SeverityBadge Value="@row.HighestSeverity" /></td>
+                    <td><ConfidenceBadge Value="@LowestConfidence(rowIssues)" /></td>
+            </tr>
+
+            @if (isOpen)
+            {
+                <tr class="da-hl">
+                    <td colspan="5">
+                        @foreach (var issue in rowIssues)
+                        {
+                            <div class="da-detail">
+                                <b>Issue</b>
+                                    <span>
+                                        <span>@issue.IssueType</span>
+@*                                         <SeverityBadge Value="@issue.Severity" />
+                                        <ConfidenceBadge Value="@issue.Confidence" Prefix="Confidence: " /> *@
+                                    </span>
+                                <b>Evidence</b><span>@issue.Evidence</span>
+                                @if (!string.IsNullOrWhiteSpace(issue.RelatedEvidence))
+                                {
+                                    <b>Conflicts with</b><span>@issue.RelatedEvidence</span>
+                                }
+                                <b>Explanation</b><span>@issue.Explanation</span>
+                                <b>Recommendation</b><span>@issue.Recommendation</span>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<p class="da-muted">Showing @rows.Count of @Reviews.Count requirements. Select a requirement with issues to expand its details.</p>
+
+@{
+    var unmatched = Unmatched();
+}
+
+@if (unmatched.Count > 0)
+{
+    <h2>Other findings</h2>
+    <p class="da-muted">These issues could not be tied to a requirement identifier.</p>
+    <IssueResults Issues="unmatched" />
+}
+
+@code {
+    [Parameter, EditorRequired] public AnalysisReport Report { get; set; } = default!;
+
+    private string resultFilter = string.Empty;
+    private string severityFilter = string.Empty;
+    private string search = string.Empty;
+    private string? expanded;
+
+    private IReadOnlyList<RequirementReview> Reviews => Report.RequirementReviews ?? [];
+
+    private void Toggle(string requirementId) => expanded = expanded == requirementId ? null : requirementId;
+
+    private List<DocumentIssue> IssuesFor(RequirementReview review) =>
+        (Report.IssuesIdentified ?? []).Where(i => AnalysisReportMapper.Concerns(i, review.RequirementId)).ToList();
+
+    private List<DocumentIssue> Unmatched() =>
+        (Report.IssuesIdentified ?? []).Where(i => !Reviews.Any(r => AnalysisReportMapper.Concerns(i, r.RequirementId))).ToList();
+
+    private List<RequirementReview> Filtered() => Reviews
+        .Where(r =>
+            (resultFilter.Length == 0 || (resultFilter == "issues" ? r.IssueCount > 0 : r.IssueCount == 0)) &&
+            (severityFilter.Length == 0 || string.Equals(r.HighestSeverity, severityFilter, StringComparison.OrdinalIgnoreCase)) &&
+            (search.Length == 0 ||
+                r.RequirementId.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                r.RequirementStatement.Contains(search, StringComparison.OrdinalIgnoreCase)))
+        .ToList();
+
+    private static string Short(string text, int max = 120) => text.Length <= max ? text : text[..max].TrimEnd() + "…";
+
+    private static string OrNone(string? text) => string.IsNullOrWhiteSpace(text) ? "None" : text;
+
+    private static string SeverityCss(string severity) => severity switch
+    {
+        Constants.Severities.Critical or Constants.Severities.High => "da-bad",
+        Constants.Severities.Medium => "da-part",
+        _ => "da-miss"
+    };
+
+    /// <summary>
+    /// The most cautious confidence among the row's issues, or null when the row has none.
+    /// </summary>
+    private static string? LowestConfidence(IReadOnlyList<DocumentIssue> issues) =>
+        issues.Count == 0
+            ? null
+            : issues.Select(i => i.Confidence).MinBy(c => Array.IndexOf(Constants.Confidences.All, c));
+}

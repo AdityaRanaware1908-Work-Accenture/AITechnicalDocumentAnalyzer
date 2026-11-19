@@ -1,0 +1,15 @@
+@inherits LayoutComponentBase
+@inject ILlmClient Llm
+
+<div class="app">
+    <header class="app-bar">
+        <span class="app-title">AI Technical Document Analyzer</span>
+        <span class="app-meta" title="Model provider and model selected in appsettings">@Llm.ProviderName · @Llm.ModelName</span>
+    </header>
+
+    @Body
+</div>
+
+<div id="blazor-error-ui" role="alert">
+    An unhandled error occurred. <a href=".">Reload</a>
+</div>

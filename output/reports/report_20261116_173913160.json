@@ -1,0 +1,79 @@
+{
+  "Summary": "7 requirements reviewed: 2 with issues, 5 without. 2 issues found (2 Medium). Types: Vague_Language (1), Incomplete_Requirement (1).",
+  "RequirementReviews": [
+    {
+      "RequirementId": "REQ-001",
+      "RequirementStatement": "REQ-001: The system shall authenticate users using multifactor authentication (MFA) for all online banking sessions.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-002",
+      "RequirementStatement": "REQ-002: The system shall complete 99% of fund transfers within 2 seconds under 1,000 concurrent users.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-003",
+      "RequirementStatement": "REQ-003: The system shall prevent duplicate debits and credits when a transfer request is retried by the user.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-004",
+      "RequirementStatement": "REQ-004: Every successful fund transfer shall debit the source account and credit the destination account exactly once.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-005",
+      "RequirementStatement": "REQ-005: The system shall recover from a regional outage with a recovery time objective (RTO) of 30 minutes and a recovery point objective (RPO) of 5 minutes.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-006",
+      "RequirementStatement": "REQ-006: All Transaction audit records shall be retained for 10 years and protected against unauthorized modification.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-007",
+      "RequirementStatement": "REQ-007: All data transmitted between application components shall be encrypted in transit.",
+      "IssueCount": 0
+    }
+  ],
+  "IssuesIdentified": [
+    {
+      "RequirementId": "REQ-002",
+      "IssueType": "Vague_Language",
+      "Severity": "Medium",
+      "SourceDocument": "banking-transfers.requirements.txt",
+      "Evidence": "REQ-002: The system shall complete 99% of fund transfers within 2 seconds under 1,000 concurrent users.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The phrase 'complete' is subjective and has no objective definition in the document, so the requirement cannot be verified consistently.",
+      "Recommendation": "Define what 'complete' means in terms of system state or transaction success criteria.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-005",
+      "IssueType": "Incomplete_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-transfers.requirements.txt",
+      "Evidence": "REQ-005: The system shall recover from a regional outage with a recovery time objective (RTO) of 30 minutes and a recovery point objective (RPO) of 5 minutes.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The document does not specify what constitutes a 'regional outage' or how the RTO/RPO are measured, so the recovery behavior cannot be implemented or verified.",
+      "Recommendation": "Define the scope of 'regional outage' and the measurement method for RTO and RPO.",
+      "Confidence": "High"
+    }
+  ],
+  "ProcessingMetrics": {
+    "Provider": "Ollama",
+    "Model": "qwen3:4b",
+    "TotalDurationSeconds": 101.1649614,
+    "PromptTokens": 2251,
+    "GeneratedTokens": 307,
+    "PromptCharacters": 11303,
+    "ModelLoadSeconds": 0.6381865,
+    "PromptEvaluationSeconds": 11.117459,
+    "GenerationSeconds": 87.35107
+  }
+}

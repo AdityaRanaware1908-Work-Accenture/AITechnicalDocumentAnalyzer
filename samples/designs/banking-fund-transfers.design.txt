@@ -1,0 +1,21 @@
+DESIGN-001: Every online banking session will require username, password, and an OTP delivered through the customer's registered mobile number.
+
+DESIGN-002: The transfer API will target a response time of 3 seconds for 95% of requests under 1,000 concurrent users.
+
+DESIGN-003: Each transfer request will include a unique idempotency key. Previously processed requests with the same key will return the original transaction result without executing another transfer.
+
+DESIGN-004: The source account debit and destination account credit will be executed as part of a single atomic database transaction. Both operations will be committed together or rolled back together.
+
+DESIGN-005: Transaction data will be replicated to a secondary region every 5 minutes. The disaster recovery procedure targets service restoration within 30 minutes.
+
+DESIGN-006: Transaction audit records will be retained for 10 years in append-only storage. Application administrators will have read-only access, and audit records cannot be modified or deleted through application interfaces.
+
+DESIGN-007: External API communication will use HTTPS with TLS 1.2 or higher. Internal service-to-service communication will also use TLS 1.2 or higher.
+
+DESIGN-008: The transfer service will validate the source account's available balance immediately before initiating the debit operation. Transfers with insufficient balance will be rejected.
+
+DESIGN-009: After a successful transfer, the notification service will queue an email or SMS notification for delivery within 60 seconds.
+
+DESIGN-010: The transfer API will reject transactions exceeding INR 250,000 per transaction.
+
+DESIGN-011: The transfer service will record transaction IDs, account references, timestamps, and transfer status in the operational application logs.

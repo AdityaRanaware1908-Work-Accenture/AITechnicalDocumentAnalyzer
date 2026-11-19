@@ -1,0 +1,35 @@
+{
+  "Summary": "1 requirements assessed: 0 satisfied, 0 in conflict with the design, 0 partially covered, 1 not addressed, 0 with unclear design wording, 0 not assessable.",
+  "RequirementsDocument": "Pasted requirements",
+  "TechnicalDesignDocument": "Pasted technical design",
+  "RequirementComparisons": [
+    {
+      "RequirementId": "REQ-01",
+      "RequirementStatement": "REQ-01: Customer payment card numbers shall be stored in encrypted form.",
+      "MatchedDesignId": "",
+      "DesignStatement": "",
+      "ConstraintType": "none",
+      "RequirementValue": "encrypted form",
+      "DesignValue": "",
+      "ComparisonReasoning": "The requirement specifies encrypted storage but the design does not address payment card storage at all.",
+      "ValueComparison": "No_Design_Statement",
+      "Status": "not_addressed",
+      "Confidence": "High",
+      "IssueType": "Missing_Design_Coverage",
+      "Severity": "Medium",
+      "Explanation": "The design does not describe how payment card numbers are stored, so the requirement cannot be satisfied.",
+      "Recommendation": "Add a design statement describing the encryption method and storage mechanism for payment card numbers."
+    }
+  ],
+  "ProcessingMetrics": {
+    "Provider": "Ollama",
+    "Model": "qwen3:4b",
+    "TotalDurationSeconds": 231.463602,
+    "PromptTokens": 3382,
+    "GeneratedTokens": 174,
+    "PromptCharacters": 16822,
+    "ModelLoadSeconds": 0.1143478,
+    "PromptEvaluationSeconds": 171.043933,
+    "GenerationSeconds": 59.399894
+  }
+}

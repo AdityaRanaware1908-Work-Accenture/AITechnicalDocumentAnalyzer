@@ -1,0 +1,7 @@
+DESIGN-001: The API service will target a 500 ms response time for 95% of requests under 500 concurrent users.
+
+DESIGN-002: User accounts will be locked after 5 consecutive failed login attempts.
+
+DESIGN-003: Audit records will be retained for 90 days.
+
+DESIGN-004: The application will use a distributed cache to improve response time.

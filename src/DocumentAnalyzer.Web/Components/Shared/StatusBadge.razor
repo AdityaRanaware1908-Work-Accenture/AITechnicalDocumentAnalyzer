@@ -1,0 +1,26 @@
+<span class="da-badge @Css(Status)">@LabelFor(Status)</span>
+
+@code {
+    [Parameter, EditorRequired] public string Status { get; set; } = string.Empty;
+
+    public static string LabelFor(string status) => status switch
+    {
+        Constants.ComparisonStatuses.Satisfied => "Satisfied",
+        Constants.ComparisonStatuses.Contradicted => "Contradicted",
+        Constants.ComparisonStatuses.PartiallyCovered => "Partially_Covered",
+        Constants.ComparisonStatuses.NotAddressed => "Not_Addressed",
+        Constants.ComparisonStatuses.DesignAmbiguous => "Design_Unclear",
+        Constants.ComparisonStatuses.NotAssessable => "Not_Assessable",
+        _ => status
+    };
+
+    private static string Css(string status) => status switch
+    {
+        Constants.ComparisonStatuses.Satisfied => "da-ok",
+        Constants.ComparisonStatuses.Contradicted => "da-bad",
+        Constants.ComparisonStatuses.PartiallyCovered => "da-part",
+        Constants.ComparisonStatuses.NotAddressed => "da-miss",
+        Constants.ComparisonStatuses.DesignAmbiguous => "da-amb",
+        _ => "da-na"
+    };
+}

@@ -1,0 +1,123 @@
+@page "/"
+
+<PageTitle>AI Technical Document Analyzer</PageTitle>
+
+<div class="da-workspace">
+    <aside class="da-panel" aria-label="Analysis setup">
+        <h2>Analysis</h2>
+        <div class="da-seg" role="group" aria-label="Analysis type">
+            <button type="button" class="@SegClass(mode == Constants.AnalysisMode.RequirementAnalysis)" aria-pressed="@Pressed(mode == Constants.AnalysisMode.RequirementAnalysis)" @onclick="() => mode = Constants.AnalysisMode.RequirementAnalysis">Analyze requirements</button>
+            <button type="button" class="@SegClass(mode == Constants.AnalysisMode.Comparison)" aria-pressed="@Pressed(mode == Constants.AnalysisMode.Comparison)" @onclick="() => mode = Constants.AnalysisMode.Comparison">Compare with design</button>
+        </div>
+
+        <h2>Documents</h2>
+        <div class="da-seg" role="group" aria-label="Document source">
+            <button type="button" class="@SegClass(!usePastedText)" aria-pressed="@Pressed(!usePastedText)" @onclick="() => usePastedText = false">Samples</button>
+            <button type="button" class="@SegClass(usePastedText)" aria-pressed="@Pressed(usePastedText)" @onclick="() => usePastedText = true">Paste text</button>
+        </div>
+
+        @if (!usePastedText)
+        {
+            @if (requirementDocs.Count == 0)
+            {
+                <p class="da-muted">No documents found in the samples folder.</p>
+            }
+
+            <div class="da-field">
+                <label for="req">Requirements</label>
+                <select id="req" @bind="selectedRequirements" @bind:after="OnRequirementsChangedAsync">
+                    @foreach (var doc in requirementDocs)
+                    {
+                        <option value="@doc.Name">@doc.Name</option>
+                    }
+                </select>
+                <pre class="da-preview">@requirementsPreview</pre>
+            </div>
+
+            @if (mode == Constants.AnalysisMode.Comparison)
+            {
+                <div class="da-field">
+                    <label for="dsg">Technical design</label>
+                    <select id="dsg" @bind="selectedDesign" @bind:after="OnDesignChangedAsync">
+                        @foreach (var doc in designDocs)
+                        {
+                            <option value="@doc.Name">@doc.Name</option>
+                        }
+                    </select>
+                    <pre class="da-preview">@designPreview</pre>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="da-field">
+                <label for="preq">Requirements text</label>
+                <textarea id="preq" rows="7" placeholder="REQ-001: The system shall..." @bind="pastedRequirements" @bind:event="oninput"></textarea>
+                @if (NumberingNotice(pastedRequirements, "REQ") is { } requirementsNote)
+                {
+                    <p class="da-note">@requirementsNote</p>
+                }
+            </div>
+
+            @if (mode == Constants.AnalysisMode.Comparison)
+            {
+                <div class="da-field">
+                    <label for="pdsg">Technical design text</label>
+                    <textarea id="pdsg" rows="7" placeholder="DESIGN-001: The service will..." @bind="pastedDesign" @bind:event="oninput"></textarea>
+                    @if (NumberingNotice(pastedDesign, "DESIGN") is { } designNote)
+                    {
+                        <p class="da-note">@designNote</p>
+                    }
+                </div>
+            }
+        }
+
+        @if (formError is not null)
+        {
+            <div class="da-alert" role="alert">@formError</div>
+        }
+
+        <div class="da-actions">
+            <button type="button" class="da-btn da-primary" disabled="@Coordinator.IsRunning" @onclick="StartRunAsync">@(mode == Constants.AnalysisMode.Comparison ? "Run comparison" : "Run analysis")</button>
+            <button type="button" class="da-btn" @onclick="ResetForm">Reset</button>
+        </div>
+
+        <h2>Recent runs</h2>
+        @if (recentRuns.Count == 0)
+        {
+            <p class="da-muted">No saved reports yet.</p>
+        }
+        else
+        {
+            <ul class="da-recent">
+                @foreach (var item in recentRuns)
+                {
+                    <li>
+                        <button type="button" class="da-recent-item" @onclick="() => OpenReportAsync(item.FileName)">
+                            <span class="da-recent-title">@item.Title</span>
+                            <span class="da-muted">@ModeLabel(item.Mode) · @item.CreatedLocal.ToString("g")</span>
+                        </button>
+                    </li>
+                }
+            </ul>
+        }
+    </aside>
+
+    <main class="da-content" aria-live="polite">
+        @if (Coordinator.Current is { Status: Constants.RunStatus.Running } running)
+        {
+            <RunProgress Run="running" OnCancel="CancelRun" />
+        }
+        else if (viewed is not null)
+        {
+            <ResultView View="viewed" OnClose="CloseResult" />
+        }
+        else
+        {
+            <div class="da-empty">
+                <h1>No results yet</h1>
+                <p class="da-muted">Choose an analysis type and documents on the left, then run it. The report appears here and is saved as JSON.</p>
+            </div>
+        }
+    </main>
+</div>

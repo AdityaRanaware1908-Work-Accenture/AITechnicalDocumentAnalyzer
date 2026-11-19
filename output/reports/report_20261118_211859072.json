@@ -1,0 +1,198 @@
+{
+  "Summary": "10 requirements reviewed: 10 with issues, 0 without. 10 issues found (9 Medium, 1 Low). Types: Vague_Language (1), Incomplete_Requirement (7), Ambiguous_Statement (2).",
+  "RequirementReviews": [
+    {
+      "RequirementId": "REQ-001",
+      "RequirementStatement": "REQ-001: The system shall authenticate users using multifactor authentication (MFA) for every online banking session.",
+      "IssueCount": 1,
+      "HighestSeverity": "Low"
+    },
+    {
+      "RequirementId": "REQ-002",
+      "RequirementStatement": "REQ-002: The system shall complete 95% of fund transfers within 3 seconds under a load of 1,000 concurrent users.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-003",
+      "RequirementStatement": "REQ-003: The system shall prevent duplicate fund transfers when a user retries a request due to a network timeout.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-004",
+      "RequirementStatement": "REQ-004: For every successful fund transfer, the system shall debit the source account and credit the destination account exactly once.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-005",
+      "RequirementStatement": "REQ-005: The system shall recover from a regional outage with a Recovery Time Objective (RTO) of 30 minutes and a Recovery Point Objective (RPO) of 5 minutes.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-006",
+      "RequirementStatement": "REQ-006: Transaction audit records shall be retained for 10 years and protected against unauthorized modification or deletion.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-007",
+      "RequirementStatement": "REQ-007: All data transmitted between application components shall be encrypted in transit using TLS 1.2 or higher.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-008",
+      "RequirementStatement": "REQ-008: The system shall reject a fund transfer if the source account has insufficient available balance at the time of transfer execution.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-009",
+      "RequirementStatement": "REQ-009: The system shall notify the customer through email or SMS within 60 seconds after a successful fund transfer.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-010",
+      "RequirementStatement": "REQ-010: The system shall support fund transfers of up to INR 500,000 per transaction.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    }
+  ],
+  "IssuesIdentified": [
+    {
+      "RequirementId": "REQ-001",
+      "IssueType": "Vague_Language",
+      "Severity": "Low",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-001: The system shall authenticate users using multifactor authentication (MFA) for every online banking session.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The term 'every online banking session' is ambiguous as it could mean each session initiated by a user or each session initiated by the system.",
+      "Recommendation": "Specify whether 'every online banking session' refers to each user session or each session initiated by the system.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-002",
+      "IssueType": "Incomplete_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-002: The system shall complete 95% of fund transfers within 3 seconds under a load of 1,000 concurrent users.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The requirement specifies a load of 1,000 concurrent users but does not define the measurement conditions, such as the duration of the load or the type of fund transfers.",
+      "Recommendation": "Define the measurement conditions for the load test, including the duration and type of fund transfers.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-003",
+      "IssueType": "Ambiguous_Statement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-003: The system shall prevent duplicate fund transfers when a user retries a request due to a network timeout.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The phrase 'when a user retries a request due to a network timeout' is ambiguous as it does not specify whether the retry is attempted by the user or the system.",
+      "Recommendation": "Clarify whether the retry is initiated by the user or the system during a network timeout.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-004",
+      "IssueType": "Incomplete_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-004: For every successful fund transfer, the system shall debit the source account and credit the destination account exactly once.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The requirement does not specify the conditions under which the debit and credit operations are considered successful, such as transaction validation or error handling.",
+      "Recommendation": "Define the conditions for a successful fund transfer to ensure exact once processing.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-005",
+      "IssueType": "Incomplete_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-005: The system shall recover from a regional outage with a Recovery Time Objective (RTO) of 30 minutes and a Recovery Point Objective (RPO) of 5 minutes.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The requirement does not specify the scope of the regional outage or the definition of 'recovery' in the context of the system's operations.",
+      "Recommendation": "Define the scope of the regional outage and the definition of system recovery.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-006",
+      "IssueType": "Incomplete_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-006: Transaction audit records shall be retained for 10 years and protected against unauthorized modification or deletion.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The requirement does not specify the type of transaction audit records or the method of protection against unauthorized modification or deletion.",
+      "Recommendation": "Specify the type of transaction audit records and the method of protection.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-007",
+      "IssueType": "Incomplete_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-007: All data transmitted between application components shall be encrypted in transit using TLS 1.2 or higher.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The requirement does not specify the components that transmit data or the conditions under which encryption is required.",
+      "Recommendation": "Define which application components transmit data and the conditions for encryption.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-008",
+      "IssueType": "Incomplete_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-008: The system shall reject a fund transfer if the source account has insufficient available balance at the time of transfer execution.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The requirement does not specify the definition of 'available balance' or the time window for checking the balance.",
+      "Recommendation": "Define 'available balance' and the time window for balance checks.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-009",
+      "IssueType": "Ambiguous_Statement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-009: The system shall notify the customer through email or SMS within 60 seconds after a successful fund transfer.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The phrase 'within 60 seconds after a successful fund transfer' is ambiguous as it does not specify whether the notification is sent immediately or after a delay.",
+      "Recommendation": "Clarify the timing of the notification relative to the successful fund transfer.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-010",
+      "IssueType": "Incomplete_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "banking-fund-transfers.requirements.txt",
+      "Evidence": "REQ-010: The system shall support fund transfers of up to INR 500,000 per transaction.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The requirement does not specify the currency or the conditions under which the transfer limit applies.",
+      "Recommendation": "Specify the currency and the conditions for the transfer limit.",
+      "Confidence": "High"
+    }
+  ],
+  "ProcessingMetrics": {
+    "Provider": "Ollama",
+    "Model": "qwen3:4b",
+    "TotalDurationSeconds": 421.7000965,
+    "PromptTokens": 2373,
+    "GeneratedTokens": 1361,
+    "PromptCharacters": 11682,
+    "ModelLoadSeconds": 0.3328872,
+    "PromptEvaluationSeconds": 0.302511,
+    "GenerationSeconds": 420.893115
+  }
+}

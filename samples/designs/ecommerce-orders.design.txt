@@ -1,0 +1,15 @@
+DESIGN-001: Order confirmation emails will be sent within 30 seconds of a successful payment.
+
+DESIGN-002: Orders with a subtotal of $50 or more will receive free shipping.
+
+DESIGN-003: Static assets will be served through a content delivery network to improve page load times.
+
+DESIGN-004: Refund approvals will require a user with the Manager role.
+
+DESIGN-006: Customers will be able to cancel an order until it is dispatched.
+
+DESIGN-008: The order service will reject new orders when the load exceeds 5,000 orders per minute.
+
+DESIGN-009: The search service will target a response time of 2 seconds for 95% of searches under 2,000 concurrent shoppers.
+
+DESIGN-010: Sensitive customer data will be protected using appropriate security measures.
