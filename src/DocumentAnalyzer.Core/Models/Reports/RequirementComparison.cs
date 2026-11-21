@@ -3,10 +3,8 @@ using System.Text.Json.Serialization;
 namespace DocumentAnalyzer.Core.Models.Reports;
 
 /// <summary>
-/// One requirement compared against the technical design: a single flat record that holds the comparison
-/// working, the verdict and, when there is a finding, the finding details.
-/// Fields marked nullable are null for rows without a finding (for example Status = satisfied) and are
-/// omitted from the saved JSON.
+/// One requirement compared against the technical design: a single flat record that holds the comparison working, the verdict and, when there is a finding, the finding details.
+/// Fields marked nullable are null for rows without a finding (for example Status = satisfied) and are omitted from the saved JSON.
 /// </summary>
 public sealed class RequirementComparison
 {

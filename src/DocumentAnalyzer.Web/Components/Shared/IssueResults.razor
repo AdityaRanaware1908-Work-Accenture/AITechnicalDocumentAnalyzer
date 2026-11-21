@@ -4,7 +4,7 @@
     <label>Issue type
         <select @bind="typeFilter">
             <option value="">All</option>
-            @foreach (var type in Constants.IssueTypes.ForDocumentAnalysis)
+            @foreach (var type in Constants.IssueTypes.ForAnalysisRows)
             {
                 <option value="@type">@type (@(Issues.Count(i => i.IssueType == type)))</option>
             }
@@ -68,10 +68,4 @@
             (severityFilter.Length == 0 || string.Equals(i.Severity, severityFilter, StringComparison.OrdinalIgnoreCase)))
         .ToList();
 
-    // private static string SeverityCss(string severity) => severity switch
-    // {
-    //     Constants.Severities.Critical or Constants.Severities.High => "da-bad",
-    //     Constants.Severities.Medium => "da-part",
-    //     _ => "da-miss"
-    // };
 }

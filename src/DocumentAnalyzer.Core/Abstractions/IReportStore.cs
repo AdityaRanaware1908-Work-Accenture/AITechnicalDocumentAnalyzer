@@ -4,7 +4,10 @@ namespace DocumentAnalyzer.Core.Abstractions;
 
 public sealed record ReportSummary(string FileName, DateTime CreatedLocal, string Title, Constants.AnalysisMode Mode);
 
-/// <summary>Where finished reports are kept. The file-based implementation writes JSON files; the UI history and downloads use this interface only.</summary>
+/// <summary>
+/// Where finished reports are kept. The file-based implementation writes JSON files; 
+/// The UI history and downloads use this interface only.
+/// </summary>
 public interface IReportStore
 {
     /// <summary>Saves the report and returns its identifier (the file name).</summary>

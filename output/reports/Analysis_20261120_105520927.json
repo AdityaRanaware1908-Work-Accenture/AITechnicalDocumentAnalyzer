@@ -1,5 +1,5 @@
 {
-  "Summary": "10 requirements reviewed: 1 with issues, 9 without. 1 issues found (1 Medium). Types: Incomplete_Requirement (1).",
+  "Summary": "10 requirements reviewed: 0 with issues, 10 without. No material issues were found.",
   "RequirementReviews": [
     {
       "RequirementId": "REQ-001",
@@ -24,8 +24,7 @@
     {
       "RequirementId": "REQ-005",
       "RequirementStatement": "REQ-005: The system shall recover from a regional outage with a Recovery Time Objective (RTO) of 30 minutes and a Recovery Point Objective (RPO) of 5 minutes.",
-      "IssueCount": 1,
-      "HighestSeverity": "Medium"
+      "IssueCount": 0
     },
     {
       "RequirementId": "REQ-006",
@@ -53,29 +52,16 @@
       "IssueCount": 0
     }
   ],
-  "IssuesIdentified": [
-    {
-      "RequirementId": "REQ-005",
-      "IssueType": "Incomplete_Requirement",
-      "Severity": "Medium",
-      "SourceDocument": "banking-fund-transfers.requirements.txt",
-      "Evidence": "REQ-005: The system shall recover from a regional outage with a Recovery Time Objective (RTO) of 30 minutes and a Recovery Point Objective (RPO) of 5 minutes.",
-      "RelatedDocument": "",
-      "RelatedEvidence": "",
-      "Explanation": "The requirement specifies RTO and RPO values but does not define the measurement period for these objectives, so verification is impossible.",
-      "Recommendation": "State the measurement period for the RTO and RPO objectives.",
-      "Confidence": "High"
-    }
-  ],
+  "IssuesIdentified": [],
   "ProcessingMetrics": {
     "Provider": "Ollama",
     "Model": "qwen3:4b",
-    "TotalDurationSeconds": 56.0875835,
-    "PromptTokens": 2713,
-    "GeneratedTokens": 155,
-    "PromptCharacters": 13005,
-    "ModelLoadSeconds": 6.1212189,
-    "PromptEvaluationSeconds": 0.387703,
-    "GenerationSeconds": 46.343239
+    "TotalDurationSeconds": 295.1714824,
+    "PromptTokens": 2468,
+    "GeneratedTokens": 752,
+    "PromptCharacters": 11620,
+    "ModelLoadSeconds": 0.8338036,
+    "PromptEvaluationSeconds": 31.889358,
+    "GenerationSeconds": 255.926856
   }
 }

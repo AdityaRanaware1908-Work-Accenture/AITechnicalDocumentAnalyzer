@@ -13,7 +13,7 @@ public sealed record LlmResponse<T>(T Content, ProcessingMetrics Metrics) where 
 
 /// <summary>
 /// The single seam between the analysis logic and any model provider. The Core project only knows this interface;
-/// local Ollama today, a cloud API tomorrow: implement it, register it, select it in configuration.
+/// local Ollama today, a cloud API tomorrow: implement, register & select it in configuration.
 /// </summary>
 public interface ILlmClient
 {

@@ -1,15 +1,20 @@
-using DocumentAnalyzer.Core.Models.Reports;
-
 namespace DocumentAnalyzer.Core.Models.ModelResponses;
 
-/// <summary>
-/// Shape of the JSON the model returns for a single-document analysis (matches PromptBuilder.AnalyzeOutputSchema).
-/// This is the raw model response, not the saved report: the report mapper turns it into an AnalysisReport
-/// and fills in what the model should not generate (document names and the summary).
-/// Properties the model may still send but the report does not need (for example "summary" or "requirementId")
-/// are ignored during deserialization.
-/// </summary>
+/// <summary>Shape of the JSON the model returns for a single-document analysis: one row per requirement.</summary>
 public sealed class DocumentAnalysisModelResponse
 {
-    public List<DocumentIssue> Issues { get; set; } = [];
+    public List<RequirementCheckRow> RequirementChecks { get; set; } = [];
+}
+
+public sealed class RequirementCheckRow
+{
+    public string RequirementId { get; set; } = string.Empty;
+    public string ConflictsWith { get; set; } = string.Empty;
+    public string TestableAsWritten { get; set; } = Constants.YesNo.Yes;
+    public string ProblemText { get; set; } = string.Empty;
+    public string IssueType { get; set; } = Constants.IssueTypes.None;
+    public string Severity { get; set; } = Constants.Severities.None;
+    public string Confidence { get; set; } = string.Empty;
+    public string Explanation { get; set; } = string.Empty;
+    public string Recommendation { get; set; } = string.Empty;
 }

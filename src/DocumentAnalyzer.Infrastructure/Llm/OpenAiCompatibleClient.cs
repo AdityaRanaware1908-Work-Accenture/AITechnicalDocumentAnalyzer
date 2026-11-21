@@ -10,7 +10,7 @@ namespace DocumentAnalyzer.Infrastructure.Llm;
 
 /// <summary>
 /// ILlmClient for services that speak the OpenAI chat completions API with JSON-schema structured output.
-/// NOT tested against a live endpoint yet: check it against your provider before relying on it.
+/// NOT tested against a live endpoint yet: Need to check it against provider before relying on it.
 /// </summary>
 public sealed class OpenAiCompatibleClient(HttpClient httpClient, IOptions<LlmOptions> options) : ILlmClient
 {

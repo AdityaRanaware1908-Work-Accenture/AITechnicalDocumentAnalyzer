@@ -10,8 +10,12 @@ namespace DocumentAnalyzer.Infrastructure.Storage;
 /// <summary>IReportStore that keeps one JSON file per report.</summary>
 public sealed class FileReportStore(IOptions<StorageOptions> options) : IReportStore
 {
-    private const string Prefix = "report_";
+    private const string AnalysisPrefix = "Analysis_";
+    private const string ComparisonPrefix = "Comparison_";
     private const string TimestampFormat = "yyyyMMdd_HHmmssfff";
+
+    // "report_" covers files saved by earlier versions, so existing reports still appear under Recent runs.
+    private static readonly string[] KnownPrefixes = [AnalysisPrefix, ComparisonPrefix, "report_"];
 
     private static readonly JsonSerializerOptions WriteOptions = new()
     {
@@ -27,7 +31,8 @@ public sealed class FileReportStore(IOptions<StorageOptions> options) : IReportS
     {
         Directory.CreateDirectory(storage.OutputFolder);
 
-        var fileName = $"{Prefix}{DateTime.Now.ToString(TimestampFormat)}.json";
+        var prefix = report.RequirementComparisons is not null ? ComparisonPrefix : AnalysisPrefix;
+        var fileName = $"{prefix}{DateTime.Now.ToString(TimestampFormat)}.json";
 
         await File.WriteAllTextAsync(Path.Combine(storage.OutputFolder, fileName), JsonSerializer.Serialize(report, WriteOptions), cancellationToken);
 
@@ -43,9 +48,10 @@ public sealed class FileReportStore(IOptions<StorageOptions> options) : IReportS
 
         var result = new List<ReportSummary>();
 
-        // The timestamp in the file name sorts lexicographically, so reversing the order gives newest first.
-        var files = Directory.EnumerateFiles(storage.OutputFolder, $"{Prefix}*.json")
-            .OrderByDescending(file => file, StringComparer.OrdinalIgnoreCase)
+        // The prefixes differ, so sort by the timestamp after the first underscore to keep newest first.
+        var files = Directory.EnumerateFiles(storage.OutputFolder, "*.json")
+            .Where(file => KnownPrefixes.Any(p => Path.GetFileName(file).StartsWith(p, StringComparison.OrdinalIgnoreCase)))
+            .OrderByDescending(Stamp, StringComparer.Ordinal)
             .Take(max);
 
         foreach (var file in files)
@@ -115,5 +121,12 @@ public sealed class FileReportStore(IOptions<StorageOptions> options) : IReportS
             File.GetLastWriteTime(file),
             title,
             isComparison ? Constants.AnalysisMode.Comparison : Constants.AnalysisMode.RequirementAnalysis);
+    }
+
+    private static string Stamp(string file)
+    {
+        var name = Path.GetFileNameWithoutExtension(file);
+
+        return name[(name.IndexOf('_') + 1)..];
     }
 }

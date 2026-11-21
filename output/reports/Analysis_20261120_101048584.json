@@ -1,5 +1,5 @@
 {
-  "Summary": "10 requirements reviewed: 4 with issues, 6 without. 3 issues found (1 High, 1 Medium, 1 Low). Types: vague_language (1), incomplete_requirement (1), internal_contradiction (1).",
+  "Summary": "10 requirements reviewed: 4 with issues, 6 without. 3 issues found (1 High, 1 Medium, 1 Low). Types: Vague_Language (1), Internal_Contradiction (1), Untestable_Requirement (1).",
   "RequirementReviews": [
     {
       "RequirementId": "REQ-001",
@@ -24,26 +24,26 @@
     },
     {
       "RequirementId": "REQ-005",
-      "RequirementStatement": "REQ-005: Payment transaction records shall be retained for audit purposes.",
-      "IssueCount": 1,
-      "HighestSeverity": "Medium"
+      "RequirementStatement": "REQ-005: Payment transaction records shall be retained for the audit retention period.",
+      "IssueCount": 0
     },
     {
       "RequirementId": "REQ-006",
-      "RequirementStatement": "REQ-006: Customers shall be able to cancel an order at any time before it is dispatched.",
+      "RequirementStatement": "REQ-006: Customers shall be allowed to cancel an order after payment confirmation, provided the order has not yet been dispatched.",
       "IssueCount": 1,
       "HighestSeverity": "High"
     },
     {
       "RequirementId": "REQ-007",
-      "RequirementStatement": "REQ-007: Customers shall not be able to cancel an order once payment has been confirmed.",
+      "RequirementStatement": "REQ-007: Customers shall not be allowed to cancel an order after payment confirmation, even if the order has not yet been dispatched.",
       "IssueCount": 1,
       "HighestSeverity": "High"
     },
     {
       "RequirementId": "REQ-008",
       "RequirementStatement": "REQ-008: The order service shall never reject a valid order.",
-      "IssueCount": 0
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
     },
     {
       "RequirementId": "REQ-009",
@@ -59,50 +59,50 @@
   "IssuesIdentified": [
     {
       "RequirementId": "REQ-003",
-      "IssueType": "vague_language",
+      "IssueType": "Vague_Language",
       "Severity": "Low",
       "SourceDocument": "ecommerce-orders.requirements.txt",
       "Evidence": "REQ-003: The checkout page shall load quickly and support a large number of shoppers.",
       "RelatedDocument": "",
       "RelatedEvidence": "",
-      "Explanation": "The terms 'quickly' and 'large number' have no objective interpretation, so the requirement cannot be verified.",
-      "Recommendation": "Replace 'quickly' with a specific load time metric and 'large number' with a defined shopper count threshold.",
+      "Explanation": "The term 'quickly' has no objective interpretation, so the requirement cannot be verified.",
+      "Recommendation": "Replace 'quickly' with a measurable time threshold.",
       "Confidence": "High"
     },
     {
-      "RequirementId": "REQ-005",
-      "IssueType": "incomplete_requirement",
-      "Severity": "Medium",
-      "SourceDocument": "ecommerce-orders.requirements.txt",
-      "Evidence": "REQ-005: Payment transaction records shall be retained for audit purposes.",
-      "RelatedDocument": "",
-      "RelatedEvidence": "",
-      "Explanation": "The requirement lacks a retention duration, so the audit period cannot be implemented or verified.",
-      "Recommendation": "Specify the retention duration for payment transaction records to meet audit requirements.",
-      "Confidence": "Medium"
-    },
-    {
       "RequirementId": "REQ-006",
-      "IssueType": "internal_contradiction",
+      "IssueType": "Internal_Contradiction",
       "Severity": "High",
       "SourceDocument": "ecommerce-orders.requirements.txt",
-      "Evidence": "REQ-006: Customers shall be able to cancel an order at any time before it is dispatched.",
+      "Evidence": "REQ-006: Customers shall be allowed to cancel an order after payment confirmation, provided the order has not yet been dispatched.",
       "RelatedDocument": "ecommerce-orders.requirements.txt",
-      "RelatedEvidence": "REQ-007: Customers shall not be able to cancel an order once payment has been confirmed.",
-      "Explanation": "The two statements conflict on when cancellation is allowed: before dispatch vs. after payment confirmation.",
-      "Recommendation": "Clarify the timing of order dispatch and payment confirmation to resolve the contradiction.",
+      "RelatedEvidence": "REQ-007: Customers shall not be allowed to cancel an order after payment confirmation, even if the order has not yet been dispatched.",
+      "Explanation": "REQ-006 and REQ-007 state incompatible cancellation rules for the same scenario.",
+      "Recommendation": "Resolve which cancellation rule applies and correct the conflicting statement.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-008",
+      "IssueType": "Untestable_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "ecommerce-orders.requirements.txt",
+      "Evidence": "REQ-008: The order service shall never reject a valid order.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The phrase 'never reject' implies an absolute guarantee that cannot be objectively verified.",
+      "Recommendation": "Define a bounded rejection rate or acceptable failure rate.",
       "Confidence": "High"
     }
   ],
   "ProcessingMetrics": {
     "Provider": "Ollama",
     "Model": "qwen3:4b",
-    "TotalDurationSeconds": 146.5656871,
-    "PromptTokens": 2159,
-    "GeneratedTokens": 395,
-    "PromptCharacters": 10727,
-    "ModelLoadSeconds": 6.5544931,
-    "PromptEvaluationSeconds": 14.287217,
-    "GenerationSeconds": 118.672368
+    "TotalDurationSeconds": 308.4329673,
+    "PromptTokens": 2417,
+    "GeneratedTokens": 900,
+    "PromptCharacters": 11400,
+    "ModelLoadSeconds": 0.2319905,
+    "PromptEvaluationSeconds": 15.456752,
+    "GenerationSeconds": 288.561376
   }
 }

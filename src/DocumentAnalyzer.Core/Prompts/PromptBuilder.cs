@@ -52,48 +52,41 @@ public static class PromptBuilder
 
     private static readonly Lazy<string> AnalyzeInstructions = new(() => $"""
         TASK
-        Review the supplied technical document independently for genuine quality issues affecting clarity, completeness, implementation, or objective verification.
-        The document may contain requirements or design statements; apply the same standards to either.
+        Review the requirements document and output exactly one row per requirement, in document order. Do not skip any requirement.
+        Decide for each requirement whether an engineer could implement it and a tester could verify it exactly as written. Most well-written requirements pass; for those, report no finding.
 
-        ISSUE TYPES AND DECISION ORDER
-        Classify each finding by its root cause using exactly one of these issueType values, and apply the first definition that matches:
-        1)Internal_Contradiction: two statements within this same document explicitly address the same obligation but state incompatible values or behaviors.
-        2)Vague_Language: a statement relies on subjective, relative, or unquantified judgement wording (for example quickly, many, user-friendly, robust, appropriate, sufficient) that has no objective interpretation in the document. Ordinary verbs and nouns (for example complete, process, transfer, record) are not vague, and a requirement that states a measurable target (a number with a unit, a percentage, or a load) is clear: do not report it as vague.        
-        3)Untestable_Requirement: the wording is not subjective, but the requirement is an absolute or unbounded guarantee (for example 100% availability, never fails, unlimited users) or defines no observable pass or fail outcome, so it cannot be objectively verified. A bounded requirement that can be checked by test or inspection, including a clearly stated prohibition, is not untestable.
-        4)Ambiguous_Statement: the statement can reasonably be read in two or more materially different ways (for example unclear scope, actor, trigger, or reference), regardless of whether each reading could be tested.
-        5)Incomplete_Requirement: the wording is objective and unambiguous, but a specific element needed for implementation or verification (a condition, parameter, actor, scope, or duration) is absent, for example a retention requirement with no duration, a limit with no value, or an action with no recipient. A common term that the document does not define (for example dispatched, confirmed, concurrent), or an unspecified measurement method, is not a missing element, and neither is a stated element that could be described in more detail (for example a named record type).
-        If vague wording is the reason a criterion is missing, report Vague_Language only and do not also report Incomplete_Requirement.
-        If one statement contains several vague terms, report them as a single finding; report separate findings for one statement only when different clauses have different root causes.
-        Do not report how well requirements are covered by a design; that does not apply to a single-document review.
+        ISSUE TYPES
+        Use a type only when the requirement cannot be implemented or verified as written. Apply the first definition that matches:
+        1)Internal_Contradiction: this requirement and another requirement in the document explicitly address the same thing but demand incompatible values or behaviors.
+        2)Vague_Language: the requirement relies on subjective, relative, or unquantified judgement wording (for example quickly, many, large number, user-friendly, robust, appropriate, sufficient) that has no objective interpretation. Ordinary verbs and nouns (for example complete, process, transfer, record) are not vague, and a requirement that states a measurable target (a number with a unit, a percentage, or a load) is clear.
+        3)Untestable_Requirement: the wording is not subjective, but the requirement is an absolute or unbounded guarantee (for example 100% availability, never fails, never rejects, unlimited users, any volume) or defines no observable pass or fail outcome.
+        4)Ambiguous_Statement: the requirement can reasonably be read in two or more materially different ways (for example unclear scope, actor, trigger, or reference), regardless of whether each reading could be tested.
+        5)Incomplete_Requirement: the sentence itself refers to a required element but never gives it, for example a limit with no value (the maximum size), a retention with no duration, or an action with no recipient.
+        If vague wording is the reason a criterion is missing, use Vague_Language only.
+
+        NEVER REPORT
+        A requirement is clear, and has no finding, when it states who or what must do something, the behavior, and a checkable value or condition, even if more detail could be added. Never report that a requirement does not specify: how something is implemented or protected; the definition of a technical, financial, or everyday term (for example MFA, RTO, TLS, audit record, available balance, complete, dispatched); the duration or type of a load test; the scope or type of something the requirement already names (a currency, a standard, a record type); or who initiates an action the sentence already attributes. The words all, every, exactly once, and prevent do not make a requirement untestable when it describes one checkable behavior. No finding is a correct answer.
 
         {SeverityRubric}
 
-        REVIEW RULES
-        1)Examine every requirement individually, including each clause; when a requirement mixes measurable and subjective clauses, keep the finding focused on the affected clause.
-        2)Default to no finding. A requirement is clear when an engineer could implement it and a tester could verify it exactly as written. Report nothing for it, even if more detail, definitions or test conditions could be added.
-        3)Before reporting, check that the missing or unclear element is really absent from the statement. If the statement already contains it (a currency, a standard, a duration, a number, a named item), there is no finding.
-        4)Never report that a requirement does not specify: how something is implemented or protected; the definition of a technical or financial term (for example MFA, RTO, TLS, audit record, available balance); the duration or type of a load test; the scope or type of something the requirement already names; or who initiates an action the sentence already attributes.
-        5)Report a missing element only when the sentence itself refers to it but never gives it, for example a limit with no value, a retention with no duration, or an action with no recipient.
-        6)Do not report a contradiction when statements can reasonably coexist because they describe different scopes, conditions, or behaviors.
-        7)After reviewing the statements individually, compare statements about the same subject across the whole document. When two of them cannot both be satisfied, report one Internal_Contradiction (the first statement as evidence, the second as relatedEvidence) instead of separate findings for each statement.
-        8)The issue type must match the explanation: Vague_Language only for subjective or unquantified wording, Ambiguous_Statement only when two different readings are really possible, Incomplete_Requirement only as in rule 5.
-        9)Most well-written requirements have no issue. An empty issues array is a correct answer.
-
-        FIELD RULES
-        requirementId: the identifier of the statement the finding concerns, exactly as written; an empty string if it has none.
-        evidence: the exact relevant statement, or the smallest exact excerpt that supports the finding, copied verbatim; never combine separate statements or silently correct the source text.
-        relatedEvidence: an empty string, except for an Internal_Contradiction, where it is the exact second conflicting statement from the same document.
-        severity: follow the severity rubric.
+        ROW FIELDS
+        Fill each row's fields in the schema order, because the earlier fields are your working for the finding:
+        requirementId: the identifier exactly as written.
+        conflictsWith: the identifier of ANOTHER requirement in this document that cannot be satisfied at the same time as this one, because they state incompatible values or behaviors for the same thing; an empty string if none. Check every other requirement. Both requirements of a contradictory pair name each other.
+        testableAsWritten: yes when an engineer could implement it and a tester could verify it exactly as written; no only when one of the issue types above applies.
+        problemText: the exact words copied from this requirement that cause the problem (the vague term, the unbounded phrase, the words that refer to the missing element); an empty string when there is no problem. Never invent or paraphrase words.
+        issueType: None when testableAsWritten is yes and conflictsWith is empty; Internal_Contradiction when conflictsWith is not empty; otherwise the matching type above.
+        severity: None when issueType is None; otherwise follow the severity rubric.
         {ConfidenceRule}
-        explanation: at most 2 short sentences (about 40 words) stating the issue and why it matters, without claiming more than the evidence establishes.
+        explanation: at most 2 short sentences (about 40 words) stating the issue and why it matters, without claiming more than the requirement establishes.
         recommendation: exactly one specific, actionable sentence of at most 25 words.
-        If no material issue is found, return an empty issues array.
+        For a row with no finding: conflictsWith, problemText, explanation and recommendation are empty strings, issueType and severity are None, and confidence is High.
 
         {AnalyzeExampleInput}
         {AnalyzeExampleOutput}
 
         OUTPUT
-        Return one JSON object with a single property issues, an array that is empty when there are no findings.
+        Return one JSON object with a single property requirementChecks, containing one row per requirement in document order.
         """);
 
     // ------------------------------------------------------------------
@@ -196,7 +189,7 @@ public static class PromptBuilder
         type = "object",
         properties = new
         {
-            issues = new
+            requirementChecks = new
             {
                 type = "array",
                 items = new
@@ -205,30 +198,25 @@ public static class PromptBuilder
                     properties = new
                     {
                         requirementId = new { type = "string" },
-                        evidence = new { type = "string" },
-                        relatedEvidence = new { type = "string" },
-                        issueType = new { type = "string", @enum = Constants.IssueTypes.ForDocumentAnalysis },
-                        severity = new { type = "string", @enum = Constants.Severities.ForIssues },
+                        conflictsWith = new { type = "string" },
+                        testableAsWritten = new { type = "string", @enum = Constants.YesNo.All },
+                        problemText = new { type = "string" },
+                        issueType = new { type = "string", @enum = Constants.IssueTypes.ForAnalysisRows },
+                        severity = new { type = "string", @enum = Constants.Severities.ForComparisonRows },
                         confidence = new { type = "string", @enum = Constants.Confidences.All },
                         explanation = new { type = "string" },
                         recommendation = new { type = "string" }
                     },
                     required = new[]
-                    {
-                        "requirementId",
-                        "evidence",
-                        "relatedEvidence",
-                        "issueType",
-                        "severity",
-                        "confidence",
-                        "explanation",
-                        "recommendation"
+                {
+                        "requirementId", "conflictsWith", "testableAsWritten", "problemText", "issueType",
+                        "severity", "confidence", "explanation", "recommendation"
                     },
                     additionalProperties = false
                 }
             }
         },
-        required = new[] { "issues" },
+        required = new[] { "requirementChecks" },
         additionalProperties = false
     };
 
@@ -305,83 +293,128 @@ public static class PromptBuilder
         REQ-X6: Invoices shall be payable within 30 days of the issue date.
         REQ-X7: Invoices shall be payable within 14 days of the issue date.
         REQ-X8: The export job shall complete within 10 minutes for 99% of runs with up to 50 concurrent exports.
-        REQ-X9: Closed support tickets shall be retained for 5 years and shall not be editable by agents.
-        REQ-X10: All connections between the web tier and the database shall use TLS 1.2 or higher.
-        REQ-X11: The nightly backup shall complete within 4 hours and be restorable within 2 hours.
-        REQ-X12: Every shipment shall be assigned exactly one tracking number.
-        REQ-X13: The system shall reject an order if the item is out of stock at the time of checkout.
-        REQ-X14: Notifications shall be sent by email or SMS within 60 seconds of a completed order.
+        REQ-X9: All connections between the web tier and the database shall use TLS 1.2 or higher.
+        REQ-X10: Every shipment shall be assigned exactly one tracking number.
 
-        Example output (only REQ-X1, REQ-X3, REQ-X4, REQ-X5, REQ-X6 and REQ-X7 have findings; every other requirement is clear and produces no finding):
-
-
+        Example output (REQ-X1, X3, X4, X5, X6 and X7 have findings; the other requirements are clear and have none):
         """;
+
 
     private const string AnalyzeExampleOutputJson =
     """
         {
-          "issues": [
-            {
-              "requirementId": "REQ-X1",
-              "evidence": "REQ-X1: The search page shall be user-friendly and return results within 2 seconds for 95% of queries.",
-              "relatedEvidence": "",
-              "issueType": "Vague_Language",
-              "severity": "Low",
-              "confidence": "High",
-              "explanation": "The term 'user-friendly' has no objective interpretation, so that clause cannot be verified. The 2-second clause is measurable and is not affected.",
-              "recommendation": "Replace 'user-friendly' with objectively verifiable usability criteria agreed with the stakeholders."
-            },
-            {
-              "requirementId": "REQ-X3",
-              "evidence": "REQ-X3: The upload service shall reject files that exceed the maximum size.",
-              "relatedEvidence": "",
-              "issueType": "Incomplete_Requirement",
-              "severity": "Medium",
-              "confidence": "High",
-              "explanation": "The requirement refers to a maximum size but never gives its value, so the rejection rule cannot be implemented or verified.",
-              "recommendation": "State the maximum allowed file size."
-            },
-            {
-              "requirementId": "REQ-X4",
-              "evidence": "REQ-X4: The service shall be available 100% of the time.",
-              "relatedEvidence": "",
-              "issueType": "Untestable_Requirement",
-              "severity": "Medium",
-              "confidence": "Medium",
-              "explanation": "An absolute availability guarantee with no bounded measurement period or allowed downtime cannot be objectively verified.",
-              "recommendation": "Restate the availability expectation as a bounded, measurable target with a defined measurement period."
-            },
-            {
-              "requirementId": "REQ-X5",
-              "evidence": "REQ-X5: The system shall send reminders to users and managers with overdue tasks.",
-              "relatedEvidence": "",
-              "issueType": "Ambiguous_Statement",
-              "severity": "Medium",
-              "confidence": "Medium",
-              "explanation": "'With overdue tasks' can apply to both users and managers or only to managers, so two materially different readings are possible.",
-              "recommendation": "State whether the overdue-task condition applies to users, managers or both."
-            },
-            {
-              "requirementId": "REQ-X6",
-              "evidence": "REQ-X6: Invoices shall be payable within 30 days of the issue date.",
-              "relatedEvidence": "REQ-X7: Invoices shall be payable within 14 days of the issue date.",
-              "issueType": "Internal_Contradiction",
-              "severity": "High",
-              "confidence": "High",
-              "explanation": "REQ-X6 and REQ-X7 give different payment periods for the same invoices, so both cannot be satisfied.",
-              "recommendation": "Resolve which payment period applies with the stakeholders and remove or correct the conflicting statement."
-            },
-            {
-              "requirementId": "REQ-X7",
-              "evidence": "REQ-X7: Invoices shall be payable within 14 days of the issue date.",
-              "relatedEvidence": "REQ-X6: Invoices shall be payable within 30 days of the issue date.",
-              "issueType": "Internal_Contradiction",
-              "severity": "High",
-              "confidence": "High",
-              "explanation": "REQ-X7 and REQ-X6 give different payment periods for the same invoices, so both cannot be satisfied.",
-              "recommendation": "Resolve which payment period applies with the stakeholders and remove or correct the conflicting statement."
-            }
-          ]
+          "requirementChecks": [
+        	{
+        		"requirementId": "REQ-X1",
+        		"conflictsWith": "",
+        		"testableAsWritten": "no",
+        		"problemText": "user-friendly",
+        		"issueType": "Vague_Language",
+        		"severity": "Low",
+        		"confidence": "High",
+        		"explanation": "'User-friendly' has no objective interpretation, so that clause cannot be verified. The 2-second clause is measurable.",
+        		"recommendation": "Replace 'user-friendly' with objectively verifiable usability criteria."
+        	},
+        	{
+        		"requirementId": "REQ-X2",
+        		"conflictsWith": "",
+        		"testableAsWritten": "yes",
+        		"problemText": "",
+        		"issueType": "None",
+        		"severity": "None",
+        		"confidence": "High",
+        		"explanation": "",
+        		"recommendation": ""
+        	},
+        	{
+        		"requirementId": "REQ-X3",
+        		"conflictsWith": "",
+        		"testableAsWritten": "no",
+        		"problemText": "maximum size",
+        		"issueType": "Incomplete_Requirement",
+        		"severity": "Medium",
+        		"confidence": "High",
+        		"explanation": "The requirement refers to a maximum size but never gives its value, so the rule cannot be implemented or verified.",
+        		"recommendation": "State the maximum allowed file size."
+        	},
+        	{
+        		"requirementId": "REQ-X4",
+        		"conflictsWith": "",
+        		"testableAsWritten": "no",
+        		"problemText": "100% of the time",
+        		"issueType": "Untestable_Requirement",
+        		"severity": "Medium",
+        		"confidence": "Medium",
+        		"explanation": "An absolute availability guarantee with no measurement period or allowed downtime cannot be objectively verified.",
+        		"recommendation": "Restate it as a bounded, measurable target with a defined measurement period."
+        	},
+        	{
+        		"requirementId": "REQ-X5",
+        		"conflictsWith": "",
+        		"testableAsWritten": "no",
+        		"problemText": "with overdue tasks",
+        		"issueType": "Ambiguous_Statement",
+        		"severity": "Medium",
+        		"confidence": "Medium",
+        		"explanation": "'With overdue tasks' can apply to both users and managers or only to managers, so two materially different readings are possible.",
+        		"recommendation": "State whether the overdue-task condition applies to users, managers or both."
+        	},
+        	{
+        		"requirementId": "REQ-X6",
+        		"conflictsWith": "REQ-X7",
+        		"testableAsWritten": "yes",
+        		"problemText": "within 30 days",
+        		"issueType": "Internal_Contradiction",
+        		"severity": "High",
+        		"confidence": "High",
+        		"explanation": "REQ-X6 and REQ-X7 give different payment periods for the same invoices, so both cannot be satisfied.",
+        		"recommendation": "Resolve which payment period applies and correct the conflicting statement."
+        	},
+        	{
+        		"requirementId": "REQ-X7",
+        		"conflictsWith": "REQ-X6",
+        		"testableAsWritten": "yes",
+        		"problemText": "within 14 days",
+        		"issueType": "Internal_Contradiction",
+        		"severity": "High",
+        		"confidence": "High",
+        		"explanation": "REQ-X7 and REQ-X6 give different payment periods for the same invoices, so both cannot be satisfied.",
+        		"recommendation": "Resolve which payment period applies and correct the conflicting statement."
+        	},
+        	{
+        		"requirementId": "REQ-X8",
+        		"conflictsWith": "",
+        		"testableAsWritten": "yes",
+        		"problemText": "",
+        		"issueType": "None",
+        		"severity": "None",
+        		"confidence": "High",
+        		"explanation": "",
+        		"recommendation": ""
+        	},
+        	{
+        		"requirementId": "REQ-X9",
+        		"conflictsWith": "",
+        		"testableAsWritten": "yes",
+        		"problemText": "",
+        		"issueType": "None",
+        		"severity": "None",
+        		"confidence": "High",
+        		"explanation": "",
+        		"recommendation": ""
+        	},
+        	{
+        		"requirementId": "REQ-X10",
+        		"conflictsWith": "",
+        		"testableAsWritten": "yes",
+        		"problemText": "",
+        		"issueType": "None",
+        		"severity": "None",
+        		"confidence": "High",
+        		"explanation": "",
+        		"recommendation": ""
+        	}
+            ]
         }
         """;
 

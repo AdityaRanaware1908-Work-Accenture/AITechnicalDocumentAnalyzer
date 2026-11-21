@@ -10,6 +10,8 @@ public static class Constants
     /// <summary>Issue types. The model returns these for single-document analysis; for comparisons code derives them from the row status.</summary>
     public static class IssueTypes
     {
+        public const string None = "None";
+
         // Single-document quality review
         public const string VagueLanguage = "Vague_Language";
         public const string UntestableRequirement = "Untestable_Requirement";
@@ -24,8 +26,9 @@ public static class Constants
         public const string AmbiguousDesign = "Ambiguous_Design";
 
         /// <summary>Allowed values for single-document analysis, in the decision order used by the prompt.</summary>
-        public static readonly string[] ForDocumentAnalysis =
+        public static readonly string[] ForAnalysisRows =
         [
+            None,
             InternalContradiction,
             VagueLanguage,
             UntestableRequirement,
@@ -176,4 +179,22 @@ public static class Constants
         Cancelled
     }
 
+    public static class AnalysisGuards
+    {
+        /// <summary>A Vague_Language finding must quote at least one of these. Extend the list as needed.</summary>
+        public static readonly string[] VagueTerms =
+        [
+            "quick", "quickly", "fast", "faster", "slow", "many", "few", "several", "large", "small", "big", "high", "low",
+        "easy", "easily", "simple", "user-friendly", "intuitive", "robust", "appropriate", "adequate", "sufficient",
+        "reasonable", "flexible", "scalable", "efficient", "efficiently", "responsive", "seamless", "smooth", "modern",
+        "minimal", "optimal", "timely", "promptly", "acceptable", "good", "better", "best", "reliable", "secure", "etc"
+        ];
+
+        /// <summary>Words ignored when checking that two requirements are about the same subject.</summary>
+        public static readonly string[] StopWords =
+        [
+            "shall", "system", "must", "should", "will", "would", "with", "that", "this", "from", "into", "been", "have",
+        "than", "when", "each", "every", "same", "their", "them", "they", "there", "which", "where", "upon", "also", "only", "such", "other"
+        ];
+    }
 }

@@ -11,7 +11,7 @@
       "ConstraintType": "none",
       "RequirementValue": "",
       "DesignValue": "",
-      "ComparisonReasoning": "The design requires username, password, and OTP, which covers MFA for online sessions.",
+      "ComparisonReasoning": "The design requires username, password, and OTP via mobile number for authentication, matching MFA for online sessions.",
       "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
@@ -24,7 +24,7 @@
       "ConstraintType": "maximum",
       "RequirementValue": "95%; 3 seconds; 1,000 concurrent users",
       "DesignValue": "95%; 3 seconds; 1,000 concurrent users",
-      "ComparisonReasoning": "The design targets 95% of requests within 3 seconds under 1,000 concurrent users, matching the requirement exactly.",
+      "ComparisonReasoning": "Time: 3 s = 3 s; 95% = 95%; load: 1,000 users = 1,000 users.",
       "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
@@ -37,7 +37,7 @@
       "ConstraintType": "none",
       "RequirementValue": "",
       "DesignValue": "",
-      "ComparisonReasoning": "The design uses idempotency keys to prevent duplicate transfers from retries.",
+      "ComparisonReasoning": "The design uses idempotency keys to prevent duplicate transfers when retries occur due to timeouts.",
       "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
@@ -50,7 +50,7 @@
       "ConstraintType": "none",
       "RequirementValue": "",
       "DesignValue": "",
-      "ComparisonReasoning": "The design ensures atomic transaction with both debits and credits committed together or rolled back.",
+      "ComparisonReasoning": "The design ensures atomic transaction: both debits and credits are committed together or rolled back together.",
       "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
@@ -63,7 +63,7 @@
       "ConstraintType": "maximum",
       "RequirementValue": "30 minutes; 5 minutes",
       "DesignValue": "30 minutes; 5 minutes",
-      "ComparisonReasoning": "The design targets 30-minute service restoration and 5-minute data replication, matching the RTO and RPO requirements.",
+      "ComparisonReasoning": "RTO: 30 min = 30 min; RPO: 5 min = 5 min.",
       "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
@@ -73,10 +73,10 @@
       "RequirementStatement": "REQ-006: Transaction audit records shall be retained for 10 years and protected against unauthorized modification or deletion.",
       "MatchedDesignId": "DESIGN-006",
       "DesignStatement": "DESIGN-006: Transaction audit records will be retained for 10 years in append-only storage. Application administrators will have read-only access, and audit records cannot be modified or deleted through application interfaces.",
-      "ConstraintType": "maximum",
+      "ConstraintType": "minimum",
       "RequirementValue": "10 years",
       "DesignValue": "10 years",
-      "ComparisonReasoning": "The design retains audit records for 10 years and protects them against modification or deletion.",
+      "ComparisonReasoning": "Retention period: 10 years = 10 years; audit records are protected against modification/deletion.",
       "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
@@ -89,7 +89,7 @@
       "ConstraintType": "none",
       "RequirementValue": "",
       "DesignValue": "",
-      "ComparisonReasoning": "The design uses TLS 1.2 or higher for both external and internal communications.",
+      "ComparisonReasoning": "The design specifies TLS 1.2 or higher for external and internal communications.",
       "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
@@ -102,7 +102,7 @@
       "ConstraintType": "none",
       "RequirementValue": "",
       "DesignValue": "",
-      "ComparisonReasoning": "The design validates source account balance before initiating transfers and rejects insufficient balances.",
+      "ComparisonReasoning": "The design validates source account balance before initiating debit and rejects transfers with insufficient balance.",
       "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
@@ -128,25 +128,25 @@
       "ConstraintType": "maximum",
       "RequirementValue": "INR 500,000",
       "DesignValue": "INR 250,000",
-      "ComparisonReasoning": "The design rejects transfers exceeding INR 250,000, which is less than the requirement's INR 500,000 limit.",
+      "ComparisonReasoning": "Maximum transfer amount: 250,000 < 500,000, so the design is less strict than the requirement.",
       "ValueComparison": "Design_Incompatible",
       "Status": "contradicted",
       "Confidence": "High",
       "IssueType": "Requirement_Design_Conflict",
       "Severity": "High",
-      "Explanation": "The design rejects transfers above INR 250,000, but the requirement allows up to INR 500,000.",
+      "Explanation": "The design rejects transfers exceeding INR 250,000, but the requirement allows up to INR 500,000.",
       "Recommendation": "Resolve the conflict between REQ-010 and DESIGN-010 (INR 500,000 vs INR 250,000) with the responsible stakeholders and align the requirement and design statements."
     }
   ],
   "ProcessingMetrics": {
     "Provider": "Ollama",
     "Model": "qwen3:4b",
-    "TotalDurationSeconds": 1219.7515722,
-    "PromptTokens": 4006,
-    "GeneratedTokens": 1454,
-    "PromptCharacters": 19692,
-    "ModelLoadSeconds": 21.6491043,
-    "PromptEvaluationSeconds": 359.825978,
-    "GenerationSeconds": 837.528945
+    "TotalDurationSeconds": 798.3804907,
+    "PromptTokens": 4015,
+    "GeneratedTokens": 1474,
+    "PromptCharacters": 19691,
+    "ModelLoadSeconds": 28.6480665,
+    "PromptEvaluationSeconds": 168.266559,
+    "GenerationSeconds": 597.849134
   }
 }

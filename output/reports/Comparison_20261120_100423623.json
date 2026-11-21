@@ -12,7 +12,7 @@
       "RequirementValue": "",
       "DesignValue": "",
       "ComparisonReasoning": "The requirement uses only subjective wording with no objective criterion.",
-      "ValueComparison": "not_applicable",
+      "ValueComparison": "Not_Applicable",
       "Status": "not_assessable",
       "Confidence": "High"
     },
@@ -25,7 +25,7 @@
       "RequirementValue": "5",
       "DesignValue": "5",
       "ComparisonReasoning": "Exact value: 5 consecutive failed attempts matches the design.",
-      "ValueComparison": "design_compatible",
+      "ValueComparison": "Design_Compatible",
       "Status": "satisfied",
       "Confidence": "High"
     },
@@ -35,16 +35,16 @@
       "MatchedDesignId": "DESIGN-001",
       "DesignStatement": "DESIGN-001: The API service will target a 500 ms response time for 95% of requests under 500 concurrent users.",
       "ConstraintType": "maximum",
-      "RequirementValue": "95%; 300 milliseconds; 500 concurrent users",
-      "DesignValue": "500 ms; 95%; 500 concurrent users",
-      "ComparisonReasoning": "Time: 500 ms = 300 ms? No, 500 ms > 300 ms (less strict); 95% = 95% (equal); 500 concurrent users = 500 concurrent users (equal).",
-      "ValueComparison": "design_incompatible",
+      "RequirementValue": "95%; 300 milliseconds; 500",
+      "DesignValue": "500 ms; 95%; 500",
+      "ComparisonReasoning": "Time: 500 ms = 300 ms? No, 500 ms > 300 ms (less strict); 95% = 95% (equal); 500 = 500 (equal).",
+      "ValueComparison": "Design_Incompatible",
       "Status": "contradicted",
       "Confidence": "High",
-      "IssueType": "requirement_design_conflict",
+      "IssueType": "Requirement_Design_Conflict",
       "Severity": "High",
       "Explanation": "The design allows slower responses than the requirement demands for 95% of requests.",
-      "Recommendation": "Resolve the conflict between REQ-003 and DESIGN-001 (95%; 300 milliseconds; 500 concurrent users vs 500 ms; 95%; 500 concurrent users) with the responsible stakeholders and align the requirement and design statements."
+      "Recommendation": "Resolve the conflict between REQ-003 and DESIGN-001 (95%; 300 milliseconds; 500 vs 500 ms; 95%; 500) with the responsible stakeholders and align the requirement and design statements."
     },
     {
       "RequirementId": "REQ-004",
@@ -54,11 +54,11 @@
       "ConstraintType": "minimum",
       "RequirementValue": "365 days",
       "DesignValue": "90 days",
-      "ComparisonReasoning": "Minimum retention: 90 days < 365 days, so the design provides less than required.",
-      "ValueComparison": "design_incompatible",
+      "ComparisonReasoning": "Minimum retention: 90 days < 365 days, so the design provides less retention than required.",
+      "ValueComparison": "Design_Incompatible",
       "Status": "contradicted",
       "Confidence": "High",
-      "IssueType": "requirement_design_conflict",
+      "IssueType": "Requirement_Design_Conflict",
       "Severity": "High",
       "Explanation": "The design retains audit records for 90 days, which is less than the required 365 days.",
       "Recommendation": "Resolve the conflict between REQ-004 and DESIGN-003 (365 days vs 90 days) with the responsible stakeholders and align the requirement and design statements."
@@ -67,12 +67,12 @@
   "ProcessingMetrics": {
     "Provider": "Ollama",
     "Model": "qwen3:4b",
-    "TotalDurationSeconds": 445.2385942,
-    "PromptTokens": 3520,
-    "GeneratedTokens": 647,
-    "PromptCharacters": 17335,
-    "ModelLoadSeconds": 0.4325569,
-    "PromptEvaluationSeconds": 174.012463,
-    "GenerationSeconds": 269.600829
+    "TotalDurationSeconds": 402.0693653,
+    "PromptTokens": 3535,
+    "GeneratedTokens": 640,
+    "PromptCharacters": 17334,
+    "ModelLoadSeconds": 0.2599528,
+    "PromptEvaluationSeconds": 168.62464,
+    "GenerationSeconds": 232.757852
   }
 }

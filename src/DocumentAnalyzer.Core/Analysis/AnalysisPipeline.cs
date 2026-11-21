@@ -7,7 +7,6 @@ namespace DocumentAnalyzer.Core.Analysis;
 
 /// <summary>
 /// One model call per analysis: build the prompt, ask the model through ILlmClient, map the response into a report.
-/// It knows nothing about Ollama, HTTP, files or the UI.
 /// </summary>
 public sealed class AnalysisPipeline(ILlmClient llm)
 {
