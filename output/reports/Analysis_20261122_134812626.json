@@ -1,0 +1,67 @@
+{
+  "Summary": "10 requirements reviewed: 0 with issues, 10 without. No material issues were found.",
+  "RequirementReviews": [
+    {
+      "RequirementId": "REQ-001",
+      "RequirementStatement": "REQ-001: The system shall authenticate users using multifactor authentication (MFA) for every online banking session.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-002",
+      "RequirementStatement": "REQ-002: The system shall complete 95% of fund transfers within 3 seconds under a load of 1,000 concurrent users.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-003",
+      "RequirementStatement": "REQ-003: The system shall prevent duplicate fund transfers when a user retries a request due to a network timeout.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-004",
+      "RequirementStatement": "REQ-004: For every successful fund transfer, the system shall debit the source account and credit the destination account exactly once.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-005",
+      "RequirementStatement": "REQ-005: The system shall recover from a regional outage with a Recovery Time Objective (RTO) of 30 minutes and a Recovery Point Objective (RPO) of 5 minutes.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-006",
+      "RequirementStatement": "REQ-006: Transaction audit records shall be retained for 10 years and protected against unauthorized modification or deletion.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-007",
+      "RequirementStatement": "REQ-007: All data transmitted between application components shall be encrypted in transit using TLS 1.2 or higher.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-008",
+      "RequirementStatement": "REQ-008: The system shall reject a fund transfer if the source account has insufficient available balance at the time of transfer execution.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-009",
+      "RequirementStatement": "REQ-009: The system shall notify the customer through email or SMS within 60 seconds after a successful fund transfer.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-010",
+      "RequirementStatement": "REQ-010: The system shall support fund transfers of up to INR 500,000 per transaction.",
+      "IssueCount": 0
+    }
+  ],
+  "IssuesIdentified": [],
+  "ProcessingMetrics": {
+    "Provider": "Ollama",
+    "Model": "qwen3:4b",
+    "TotalDurationSeconds": 226.4395195,
+    "PromptTokens": 2468,
+    "GeneratedTokens": 752,
+    "PromptCharacters": 11649,
+    "ModelLoadSeconds": 0.5194854,
+    "PromptEvaluationSeconds": 14.070333,
+    "GenerationSeconds": 211.059569
+  }
+}

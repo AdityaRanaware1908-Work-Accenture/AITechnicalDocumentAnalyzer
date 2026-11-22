@@ -1,0 +1,94 @@
+{
+  "Summary": "10 requirements reviewed: 2 with issues, 8 without. 2 issues found (1 Medium, 1 Low). Types: Vague_Language (1), Untestable_Requirement (1).",
+  "RequirementReviews": [
+    {
+      "RequirementId": "REQ-001",
+      "RequirementStatement": "REQ-001: The system shall send an order confirmation email to the customer within 60 seconds of a successful payment.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-002",
+      "RequirementStatement": "REQ-002: The system shall apply free shipping to all orders with a subtotal of $50 or more.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-003",
+      "RequirementStatement": "REQ-003: The checkout page shall load quickly and support a large number of shoppers.",
+      "IssueCount": 1,
+      "HighestSeverity": "Low"
+    },
+    {
+      "RequirementId": "REQ-004",
+      "RequirementStatement": "REQ-004: Managers and finance staff who have completed security training shall be able to approve refunds.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-005",
+      "RequirementStatement": "REQ-005: Payment transaction records shall be retained for the audit retention period.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-006",
+      "RequirementStatement": "REQ-006: Customers shall be allowed to cancel an order after payment confirmation, provided the order has not yet been dispatched.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-007",
+      "RequirementStatement": "REQ-007: Customers shall not be allowed to cancel an order after payment confirmation, even if the order has not yet been dispatched.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-008",
+      "RequirementStatement": "REQ-008: The order service shall never reject a valid order.",
+      "IssueCount": 1,
+      "HighestSeverity": "Medium"
+    },
+    {
+      "RequirementId": "REQ-009",
+      "RequirementStatement": "REQ-009: The product search shall return results within 1.5 seconds for 98% of searches under 2,000 concurrent shoppers.",
+      "IssueCount": 0
+    },
+    {
+      "RequirementId": "REQ-010",
+      "RequirementStatement": "REQ-010: Customer payment card numbers shall be stored in encrypted form.",
+      "IssueCount": 0
+    }
+  ],
+  "IssuesIdentified": [
+    {
+      "RequirementId": "REQ-003",
+      "IssueType": "Vague_Language",
+      "Severity": "Low",
+      "SourceDocument": "ecommerce-orders.requirements.txt",
+      "Evidence": "REQ-003: The checkout page shall load quickly and support a large number of shoppers.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The term 'quickly' has no objective interpretation, so the requirement cannot be verified.",
+      "Recommendation": "Replace 'quickly' with a measurable time threshold.",
+      "Confidence": "High"
+    },
+    {
+      "RequirementId": "REQ-008",
+      "IssueType": "Untestable_Requirement",
+      "Severity": "Medium",
+      "SourceDocument": "ecommerce-orders.requirements.txt",
+      "Evidence": "REQ-008: The order service shall never reject a valid order.",
+      "RelatedDocument": "",
+      "RelatedEvidence": "",
+      "Explanation": "The phrase 'never reject' implies an absolute guarantee with no measurable exceptions, so it cannot be objectively verified.",
+      "Recommendation": "Define a bounded rejection rate or acceptable failure conditions.",
+      "Confidence": "High"
+    }
+  ],
+  "ProcessingMetrics": {
+    "Provider": "Ollama",
+    "Model": "qwen3:4b",
+    "TotalDurationSeconds": 260.0323151,
+    "PromptTokens": 2418,
+    "GeneratedTokens": 826,
+    "PromptCharacters": 11429,
+    "ModelLoadSeconds": 0.2105319,
+    "PromptEvaluationSeconds": 12.784041,
+    "GenerationSeconds": 246.598618
+  }
+}
